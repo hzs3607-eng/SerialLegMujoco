@@ -56,6 +56,10 @@ int main(void) {
         mju_error("Could not load custom_robot.xml: %s", errstr);
     }
     d = mj_makeData(m);
+    
+    // Set simulation timestep to 0.002s (2ms) for stability
+    m->opt.timestep = 0.002;
+    
     // --- 设置初始化条件 ---
     d->qpos[0] = 0;
     d->qpos[1] = 0;
@@ -113,7 +117,14 @@ int main(void) {
             
             if (d->time - last_print_time > 0.1) {
             // --- 打印基本信息 ---
+            printf("-------------------------------------------------------\n");
             printf("Sim Time: %.3f s\n", d->time);
+            
+            // 打印控制软件内部状态 (腿长)
+            auto& ctx = chassis_SoftWareController.context_;
+            printf("Leg Exp Target (raw/lpf): %.4f / %.4f m\n", ctx.external_command.l0_exp_raw, ctx.external_command.l0_exp);
+            printf("Actual Leg Height (L/R): %.4f / %.4f m\n", ctx.vmc_state.y_left, ctx.vmc_state.y_right);
+            printf("FSM State: %d\n", ctx.controller_state);
             // --- 获取关节数据 ---
             // 找到关节的ID
             //left_front_l
