@@ -17,7 +17,7 @@ mjrContext con;
 
 bool button_left = false, button_middle = false, button_right = false;
 double lastx = 0, lasty = 0;
-bool is_paused = false;    // Start unpaused for better UX
+bool is_paused = true;     // Default to paused for analysis
 bool step_simulation = false;
 
 // Extern functions from SM_io.cpp
@@ -93,9 +93,20 @@ void myController(const mjModel* model, mjData* data) {
 
 void keyboardCB(GLFWwindow* window, int key, int scancode, int act, int mods) {
     if (act == GLFW_PRESS) {
-        if (key == GLFW_KEY_P) is_paused = !is_paused;
-        if (key == GLFW_KEY_N) { is_paused = true; step_simulation = true; }
-        if (key == GLFW_KEY_R) { mj_resetData(m, d); d->qpos[2] = 0.15; }
+        if (key == GLFW_KEY_P) {
+            is_paused = !is_paused;
+            printf(">>> Simulation %s\n", is_paused ? "PAUSED" : "RESUMED");
+        }
+        if (key == GLFW_KEY_N) {
+            is_paused = true;
+            step_simulation = true;
+            printf(">>> Simulation STEP (0.002s)\n");
+        }
+        if (key == GLFW_KEY_R) {
+            mj_resetData(m, d);
+            d->qpos[2] = 0.15;
+            printf(">>> Simulation RESET\n");
+        }
     }
     Sim_Keyboard_Callback(key, act);
 }
@@ -138,6 +149,17 @@ int main(void) {
 
     if (!glfwInit()) mju_error("GLFW error");
     GLFWwindow* window = glfwCreateWindow(1200, 900, "MuJoCo Wheel-Leg Sim", nullptr, nullptr);
+    if (!window) mju_error("Window creation failed");
+
+    printf("\n=======================================================\n");
+    printf("   MuJoCo Wheel-Leg Simulation Started (PAUSED)\n");
+    printf("-------------------------------------------------------\n");
+    printf("   [P] toggle Pause/Resume\n");
+    printf("   [N] Step one physics step (0.002s)\n");
+    printf("   [R] Reset simulation\n");
+    printf("   [W/S/A/D] Change velocity/turn targets\n");
+    printf("=======================================================\n\n");
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
@@ -158,15 +180,16 @@ int main(void) {
 
     mjtNum last_print_time = -1.0;
     while (!glfwWindowShouldClose(window)) {
-        double simstart = d->time;
-        while (d->time - simstart < 1.0 / 60.0) {
-            if (!is_paused || step_simulation) {
+        if (!is_paused) {
+            double simstart = d->time;
+            while (d->time - simstart < 1.0 / 60.0) {
                 mj_step(m, d);
-                step_simulation = false;
-            } else {
-                mj_forward(m, d);
-                break; // Prevent infinite loop when paused!
             }
+        } else if (step_simulation) {
+            mj_step(m, d);
+            step_simulation = false; // Reset after one physics step
+        } else {
+            mj_forward(m, d);
         }
         
         if (d->time - last_print_time > 0.1) {
