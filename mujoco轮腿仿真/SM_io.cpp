@@ -186,7 +186,7 @@ void Sim_Update_IO(const mjModel* m, mjData* d) {
     set_torque("right_wheel_j_ctrl",  mt.m3508_troque_right,      true);   // Invert right wheel
 
     // 左侧 - Front motor inverted, Back motor NOT inverted
-    set_torque("left_front_j_ctrl",   mt.ckyf_troque_left_front,  true);   // Invert front
-    set_torque("left_behind_j_ctrl",  mt.ckyf_troque_left_back,   false);
-    set_torque("left_wheel_j_ctrl",   mt.m3508_troque_left,       false);
+    set_torque("left_front_j_ctrl",   mt.ckyf_troque_left_front,  false);   // Invert front
+    set_torque("left_behind_j_ctrl",  mt.ckyf_troque_left_back,   true);
+    set_torque("left_wheel_j_ctrl",   mt.m3508_troque_left,       true);
 }
