@@ -59,27 +59,25 @@ void Sim_Keyboard_Callback(int key, int act) {
 
         // --- 运动控制 (WASD) ---
         case GLFW_KEY_W: 
-            cmd.velocity_x_plan += 4.3f; 
+            cmd.velocity_x_plan = 1.0f; 
             printf(">>> 前进: Vx = %.2f\n", cmd.velocity_x_plan);
             break;
         case GLFW_KEY_S: 
-            cmd.velocity_x_plan -= 4.3f; 
+            cmd.velocity_x_plan = -1.0f; 
             printf(">>> 后退: Vx = %.2f\n", cmd.velocity_x_plan);
             break;
         case GLFW_KEY_A: 
-            cmd.omega_plan -= 4.3f; 
+            cmd.omega_plan = -5.0f; 
             printf(">>> 左转: Wz = %.2f\n", cmd.omega_plan);
             break;
         case GLFW_KEY_D: 
-            cmd.omega_plan += 4.3f; 
+            cmd.omega_plan = 5.0f; 
             printf(">>> 右转: Wz = %.2f\n", cmd.omega_plan);
             break;
-        
-        // --- 停止 ---
-        case GLFW_KEY_X:
+        // default to stop
+        default:
             cmd.velocity_x_plan = 0.0f;
             cmd.omega_plan = 0.0f;
-            printf(">>> 刹车!\n");
             break;
     }
 }

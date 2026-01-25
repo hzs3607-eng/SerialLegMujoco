@@ -19,6 +19,7 @@ bool button_left = false, button_middle = false, button_right = false;
 double lastx = 0, lasty = 0;
 bool is_paused = true;     // Default to paused for analysis
 bool step_simulation = false;
+double last_control_time = -1.0; // Timer for 2ms control interval
 
 // Extern functions from SM_io.cpp
 extern void Sim_Update_IO(const mjModel* m, mjData* d);
@@ -87,8 +88,11 @@ void printDebugInfo() {
 // 3. MuJoCo Callbacks & GLFW
 // =================================================================
 void myController(const mjModel* model, mjData* data) {
-    // This callback is called during mj_step
-    Sim_Update_IO(model, data);
+    // Run the controller only every 2ms
+    if (data->time - last_control_time >= 0.002 - 1e-6) {
+        Sim_Update_IO(model, data);
+        last_control_time = data->time;
+    }
 }
 
 void keyboardCB(GLFWwindow* window, int key, int scancode, int act, int mods) {
@@ -105,6 +109,7 @@ void keyboardCB(GLFWwindow* window, int key, int scancode, int act, int mods) {
         if (key == GLFW_KEY_R) {
             mj_resetData(m, d);
             d->qpos[2] = 0.15;
+            last_control_time = -1.0; // Reset control timer
             printf(">>> Simulation RESET\n");
         }
     }
@@ -141,7 +146,6 @@ int main(void) {
     m = mj_loadXML("custom_robot.xml", nullptr, errstr, 1000);
     if (!m) mju_error("Load error: %s", errstr);
     d = mj_makeData(m);
-    m->opt.timestep = 0.002;
     d->qpos[2] = 0.15; // Initial height
     
     ids.cache(m);
@@ -188,6 +192,7 @@ int main(void) {
         } else if (step_simulation) {
             mj_step(m, d);
             step_simulation = false; // Reset after one physics step
+            printDebugInfo();        // Force log on explicit step
         } else {
             mj_forward(m, d);
         }
