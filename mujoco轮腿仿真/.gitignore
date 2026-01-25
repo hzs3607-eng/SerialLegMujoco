@@ -1,0 +1,16 @@
+# Compiled executables
+taskfinal
+
+# Shared libraries (runtime)
+*.so
+mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/lib/libmujoco.so
+
+# Build artifacts
+*.o
+*.a
+
+# Editor/IDE files
+.vscode/
+*.swp
+*.swo
+*~
