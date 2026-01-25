@@ -63,7 +63,7 @@ int main(void) {
     // --- 设置初始化条件 ---
     d->qpos[0] = 0;
     d->qpos[1] = 0;
-    d->qpos[2] = 0.5;
+    d->qpos[2] = 0.15;
     // --- 加载控制器 ---
     mjcb_control = myController;
     // --- 加载GLFW与可视化数据 ---

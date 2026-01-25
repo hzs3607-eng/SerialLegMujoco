@@ -150,18 +150,18 @@ void Sim_Update_IO(const mjModel* m, mjData* d) {
     // 填充 MotorRealStatus
     auto& ms = ctx.motorRealStatus;
     
-    // 右侧 (反向)
-    ms.ckyf_pos_right_front      = 3.1-get_motor_q("right_front_j");
-    ms.ckyf_velocity_right_front = -get_motor_v("right_front_j");
-    ms.ckyf_pos_right_back       = 0.15-get_motor_q("right_behind_j");
-    ms.ckyf_velocity_right_back  = -get_motor_v("right_behind_j");
-    ms.wheel_velocity_right      = -get_motor_v("right_wheel_j");
+    // 右侧
+    ms.ckyf_pos_right_front      = PI-get_motor_q("right_front_j"); // Invert front and offset PI
+    ms.ckyf_velocity_right_front = -get_motor_v("right_front_j"); // Invert front
+    ms.ckyf_pos_right_back       = get_motor_q("right_behind_j");
+    ms.ckyf_velocity_right_back  = get_motor_v("right_behind_j");
+    ms.wheel_velocity_right      = -get_motor_v("right_wheel_j"); // Invert right wheel
 
-    // 左侧 (正向)
-    ms.ckyf_pos_left_front       = 3.1-get_motor_q("left_front_j");
-    ms.ckyf_velocity_left_front  = -get_motor_v("left_front_j");
-    ms.ckyf_pos_left_back        = 0.15-get_motor_q("left_behind_j");
-    ms.ckyf_velocity_left_back   = -get_motor_v("left_behind_j");
+    // 左侧
+    ms.ckyf_pos_left_front       = PI-get_motor_q("left_front_j"); // Invert front and offset PI
+    ms.ckyf_velocity_left_front  = -get_motor_v("left_front_j"); // Invert front
+    ms.ckyf_pos_left_back        = get_motor_q("left_behind_j");
+    ms.ckyf_velocity_left_back   = get_motor_v("left_behind_j");
     ms.wheel_velocity_left       = get_motor_v("left_wheel_j");
 
 
@@ -182,13 +182,13 @@ void Sim_Update_IO(const mjModel* m, mjData* d) {
         if (id != -1) d->ctrl[id] = invert ? -val : val;
     };
 
-    // 右侧 (反向写入)
-    set_torque("right_front_j_ctrl",  mt.ckyf_troque_right_front, true);
-    set_torque("right_behind_j_ctrl", mt.ckyf_troque_right_back,  true);
-    set_torque("right_wheel_j_ctrl",  mt.m3508_troque_right,      false);
+    // 右侧 - Front motor inverted, Back motor NOT inverted
+    set_torque("right_front_j_ctrl",  mt.ckyf_troque_right_front, true);   // Invert front
+    set_torque("right_behind_j_ctrl", mt.ckyf_troque_right_back,  false);
+    set_torque("right_wheel_j_ctrl",  mt.m3508_troque_right,      true);   // Invert right wheel
 
-    // 左侧 (正向写入)
-    set_torque("left_front_j_ctrl",   mt.ckyf_troque_left_front,  false);
+    // 左侧 - Front motor inverted, Back motor NOT inverted
+    set_torque("left_front_j_ctrl",   mt.ckyf_troque_left_front,  true);   // Invert front
     set_torque("left_behind_j_ctrl",  mt.ckyf_troque_left_back,   false);
     set_torque("left_wheel_j_ctrl",   mt.m3508_troque_left,       false);
 }
