@@ -1,4 +1,4 @@
-[submodule "mujoco轮腿仿真/chassiscontrolsoftware"]
-	path = mujoco轮腿仿真/chassiscontrolsoftware
+[submodule "mujocoSIM/chassiscontrolsoftware"]
+	path = mujocoSIM/chassiscontrolsoftware
 	url = git@git.lug.ustc.edu.cn:robowalker/serialleg-wheelrobot/chassiscontrolsoftware.git
 	branch = debug
