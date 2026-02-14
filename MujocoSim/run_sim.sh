@@ -1,23 +1,22 @@
 #!/bin/bash
-# Launch script for MuJoCo wheel-leg robot simulation
-
-# Change to script directory
 cd "$(dirname "$0")"
 
-# Compile first
-echo "Compiling..."
-g++ -fdiagnostics-color=always -g taskfinal.cpp SM_io.cpp chassiscontrolsoftware/Src/*.cpp -o taskfinal \
-    -I./mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/include \
+# 直接写死你的绝对路径，杜绝任何找不到文件的情况
+MUJOCO_DIR="/home/hzs/mujoco-3.4.0"
+
+echo "Compiling using Global MuJoCo 3.4.0 SDK..."
+g++ -fdiagnostics-color=always -g taskfinal.cpp SM_io.cpp ./chassiscontrolsoftware/Src/*.cpp -o taskfinal \
+    -I"${MUJOCO_DIR}/include" \
     -I./chassiscontrolsoftware/Inc \
-    -L./mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/lib \
+    -L"${MUJOCO_DIR}/lib" \
     -lmujoco -ldl -lglfw -lm \
-    -Wl,-rpath,./mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/lib
+    -Wl,-rpath,"${MUJOCO_DIR}/lib"
 
 if [ $? -eq 0 ]; then
-    echo "Compilation successful. Starting simulation..."
-    # Set MuJoCo library path and run simulation
-    LD_LIBRARY_PATH=./mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/lib:$LD_LIBRARY_PATH ./taskfinal
+    echo -e "\n✅ Compilation successful! Starting simulation..."
+    export LD_LIBRARY_PATH="${MUJOCO_DIR}/lib":$LD_LIBRARY_PATH
+    ./taskfinal
 else
-    echo "Compilation failed!"
+    echo -e "\n❌ Compilation failed!"
     exit 1
 fi
