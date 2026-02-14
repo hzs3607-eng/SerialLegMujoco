@@ -14,3 +14,4 @@ mujoco-3.4.0-linux-x86_64/mujoco-3.4.0/lib/libmujoco.so
 *.swp
 *.swo
 *~
+mujoco-3.4.0-linux-x86_64/

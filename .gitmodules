@@ -1,4 +1,4 @@
 [submodule "mujoccoSIM/chassiscontrolsoftware"]
-	path = mujoccoSIM/chassiscontrolsoftware
+	path = MujocoSim/chassiscontrolsoftware
 	url = https://git.lug.ustc.edu.cn/robowalker/serialleg-wheelrobot/chassiscontrolsoftware.git
     branch = debug
