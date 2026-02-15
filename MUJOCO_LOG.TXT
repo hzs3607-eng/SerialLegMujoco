@@ -1,0 +1,6 @@
+Sun Feb 15 11:10:39 2026
+ERROR: Load error: Error: Error opening file 'meshes/base_link.STL': No such file or directory
+
+Sun Feb 15 11:11:17 2026
+ERROR: Load error: Error: Error opening file 'meshes/pitch_l.STL': No such file or directory
+
